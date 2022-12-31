@@ -8,7 +8,8 @@ def getFiles(codeDir, ext):
 	for r, d, f in os.walk(codeDir):
 		for file in f:
 			if file.endswith(".{}".format(ext)):
-				codeFiles.append(os.path.join(r, file))
+				if 'numpy'.lower() not in r.lower():
+					codeFiles.append(os.path.join(r, file))
 
 	return codeFiles
 
@@ -20,16 +21,22 @@ def countLines(files):
 		with open(file, 'r') as codeFile:
 			data = codeFile.readlines()
 
-		for line in data:
-			if re.search('\w', line) is not None:
-				lines += 1
+		lines += len(data)
 
 	return lines
 
 
 
 if __name__ == '__main__':
-	codePath = 'C:/Users/srchr/Documents/DownloadManager/'
-	files = getFiles(codePath, 'py')
-	lines = countLines(files)
+	codePaths = [
+		'C:/Users/Chris/Documents/ProtoPipe_1.1/applications',
+		'C:/Users/Chris/Documents/ProtoPipe_1.1/ProtoPipe',
+		'C:/Users/Chris/Documents/ProtoPipe_1.1/tools'
+	]
+
+	lines = 0
+	for path in codePaths:
+		files = getFiles(path, 'py')
+		lines += countLines(files)
+
 	print(lines)
